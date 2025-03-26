@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${MYSQL_DATABASE:?Database name not set}
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER:-library_user}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD:?Password not set}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Root password not set}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-library_db}
+      MYSQL_USER: ${MYSQL_USER:-library_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Password not set}
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "${MYSQL_USER:-library_user}", "-p${MYSQL_PASSWORD:?Password not set}", "-e", "SELECT 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

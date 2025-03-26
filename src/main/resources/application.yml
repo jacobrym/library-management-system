@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: LibraryManagementSystem
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      connection-timeout: 20000  # 20 seconds
+      initialization-fail-timeout: 0  # no limit
+      max-lifetime: 60000  # 60 seconds
+  jpa:
+    hibernate:
+      ddl-auto: update
+  autoconfigure:
+#    temporary disable spring security
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
