@@ -7,13 +7,21 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
       connection-timeout: 20000  # 20 seconds
-      initialization-fail-timeout: 0  # no limit
+      initialization-fail-timeout: -1  # No timeout limit
+      maximum-pool-size: 5
       max-lifetime: 60000  # 60 seconds
+      connection-test-query: "SELECT 1"
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true  # temporary for debugging
+    defer-datasource-initialization: true  # Populate DB after any EntityManagerFactory init
+  sql:
+    init:
+      mode: always
   autoconfigure:
-#    temporary disable spring security
+    # temporary disable spring security
     exclude:
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
       - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration

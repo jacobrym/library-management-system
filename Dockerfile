@@ -2,6 +2,7 @@ FROM eclipse-temurin:17-jdk-alpine AS builder
 WORKDIR /library-app
 
 COPY pom.xml .
+COPY checkstyle-9.3.xml .
 COPY mvnw .
 
 COPY .mvn ./.mvn
