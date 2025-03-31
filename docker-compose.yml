@@ -1,11 +1,22 @@
 services:
+  builder:
+    image: eclipse-temurin:17-jdk-alpine
+    working_dir: /library-app
+    volumes:
+      - .:/library-app
+      - ./docs:/library-app/target/reports/apidocs
+    command: >
+      sh -c "./mvnw package -DskipTests --batch-mode javadoc:javadoc"
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: eclipse-temurin:17-jre-alpine
+    working_dir: /library-app
+    volumes:
+      - ./target/library-management-system-0.0.1-SNAPSHOT.jar:/library-app/library-app.jar
     ports:
       - "8080:8080"
     depends_on:
+      builder:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
     environment:
@@ -13,6 +24,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER:-library_user}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD:?Password not set}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    command: ["java", "-jar", "library-app.jar"]
   db:
     image: mysql:8.0
     environment:

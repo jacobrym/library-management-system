@@ -107,11 +107,23 @@
 				</executions>
 				<configuration>
 					<configLocation>checkstyle-9.3.xml</configLocation>
-					<encoding>UTF-8</encoding>
+					<inputEncoding>UTF-8</inputEncoding>
 					<consoleOutput>true</consoleOutput>
 					<failsOnError>true</failsOnError>
 					<violationSeverity>warning</violationSeverity>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.10.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
