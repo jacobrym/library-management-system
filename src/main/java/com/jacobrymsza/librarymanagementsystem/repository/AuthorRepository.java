@@ -1,6 +1,7 @@
 package com.jacobrymsza.librarymanagementsystem.repository;
 
 import com.jacobrymsza.librarymanagementsystem.entity.Author;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-  public Author findByLastName(String lastName);
+  Author findByLastName(String lastName);
+
+  Optional<Author> findByFirstNameAndLastName(String firstName, String lastName);
 }

@@ -1,11 +1,13 @@
 package com.jacobrymsza.librarymanagementsystem.service;
 
+import com.jacobrymsza.librarymanagementsystem.dto.BorrowingDTO;
 import com.jacobrymsza.librarymanagementsystem.entity.Book;
 import com.jacobrymsza.librarymanagementsystem.entity.Borrowing;
 import com.jacobrymsza.librarymanagementsystem.entity.User;
 import com.jacobrymsza.librarymanagementsystem.repository.BookRepository;
 import com.jacobrymsza.librarymanagementsystem.repository.BorrowingRepository;
 import com.jacobrymsza.librarymanagementsystem.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,10 +47,11 @@ public class BorrowingService {
    *
    * @param bookId the ID of the book to be borrowed
    * @param userId the ID of the user borrowing the book
-   * @return the created Borrowing entity
+   * @return the created BorrowingDTO entity
    * @throws IllegalArgumentException if the book or user with the given ID does not exist
    */
-  public Borrowing borrowBook(Long bookId, Long userId) {
+  @Transactional
+  public BorrowingDTO borrowBook(Long bookId, Long userId) {
     Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new IllegalArgumentException("Book with ID "
                                                             + bookId + " not found"));
@@ -61,6 +64,53 @@ public class BorrowingService {
     borrowing.setUser(user);
     borrowing.setBorrowDate(LocalDateTime.now());
 
-    return borrowingRepository.save(borrowing);
+    Borrowing savedBorrowing = borrowingRepository.save(borrowing);
+    return mapToDTO(savedBorrowing);
+  }
+
+  /**
+   * Marks a borrowed book as returned by setting its return date.
+   *
+   * @param borrowingId the ID of the borrowing record to update
+   * @return the updated BorrowingDTO
+   * @throws IllegalArgumentException if the borrowing ID is invalid or the book is already returned
+   */
+  @Transactional
+  public BorrowingDTO returnBook(Long borrowingId) {
+    Borrowing borrowing = borrowingRepository.findById(borrowingId)
+            .orElseThrow(() -> new IllegalArgumentException("Borrowing with ID "
+                                                            + borrowingId + " not found"));
+    if (borrowing.getReturnDate() != null) {
+      throw new IllegalArgumentException("Book with borrowing ID "
+                                         + borrowingId + " has already been returned");
+    }
+
+    borrowing.setReturnDate(LocalDateTime.now());
+    Borrowing updatedBorrowing = borrowingRepository.save(borrowing);
+    return mapToDTO(updatedBorrowing);
+  }
+
+  /**
+   * Retrieves a borrowing record by its ID.
+   *
+   * @param id the ID of the borrowing record to retrieve
+   * @return the BorrowingDTO containing borrowing details
+   * @throws IllegalArgumentException if the borrowing with the specified ID is not found
+   */
+  public BorrowingDTO getBorrowingById(Long id) {
+    Borrowing borrowing = borrowingRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Borrowing with ID "
+                                                            + id + " not found"));
+    return mapToDTO(borrowing);
+  }
+
+  private BorrowingDTO mapToDTO(Borrowing borrowing) {
+    return new BorrowingDTO(
+            borrowing.getId(),
+            borrowing.getBook().getTitle(),
+            borrowing.getUser().getUsername(),
+            borrowing.getBorrowDate(),
+            borrowing.getReturnDate()
+    );
   }
 }
