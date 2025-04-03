@@ -15,11 +15,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true  # temporary for debugging
     defer-datasource-initialization: true  # Populate DB after any EntityManagerFactory init
   sql:
     init:
       mode: always
+      data-locations: classpath:data.sql
   autoconfigure:
     # temporary disable spring security
     exclude:

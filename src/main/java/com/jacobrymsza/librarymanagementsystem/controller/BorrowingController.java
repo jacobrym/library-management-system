@@ -4,6 +4,7 @@ import com.jacobrymsza.librarymanagementsystem.dto.BorrowRequestDTO;
 import com.jacobrymsza.librarymanagementsystem.dto.BorrowingDTO;
 import com.jacobrymsza.librarymanagementsystem.service.BorrowingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +35,34 @@ public class BorrowingController {
    * @return ResponseEntity containing the created BorrowingDTO with HTTP status 201
    */
   @PostMapping
-  public ResponseEntity<BorrowingDTO> borrowBook(@RequestBody BorrowRequestDTO request) {
-    BorrowingDTO borrowing = borrowingService.borrowBook(request.getBookId(),
-                                                         request.getUserId());
-    return ResponseEntity.status(201).body(borrowing);
+  public ResponseEntity<?> borrowBook(@RequestBody BorrowRequestDTO request) {
+    try {
+      if (request == null || request.getBookId() == null || request.getUserId() == null) {
+        throw new IllegalArgumentException("Book ID and User ID are required");
+      }
+      BorrowingDTO borrowing = borrowingService.borrowBook(request.getBookId(),
+                                                           request.getUserId());
+      return ResponseEntity.status(201).body(borrowing);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
+  /**
+   * Handles the HTTP PUT request to return a borrowed book.
+   *
+   * @param id the ID of the borrowing record to be returned
+   * @return ResponseEntity containing the updated BorrowingDTO if successful,
+   *         or a bad request response with an error message if the return operation fails.
+   */
   @PutMapping("/{id}/return")
-  public ResponseEntity<BorrowingDTO> returnBook(@PathVariable Long id) {
-    BorrowingDTO returnedBorrowing = borrowingService.returnBook(id);
-    return ResponseEntity.ok(returnedBorrowing);
+  public ResponseEntity<?> returnBook(@PathVariable Long id) {
+    try {
+      BorrowingDTO borrowing = borrowingService.returnBook(id);
+      return ResponseEntity.ok(borrowing);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   @GetMapping("/{id}")

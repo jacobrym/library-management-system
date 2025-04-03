@@ -36,8 +36,11 @@ A web application for managing a library, built with Spring Boot and Docker Comp
 4. **Start the application:**
    ```bash
    docker compose up --build
+   or
+   RUN_TESTS=false docker compose up --build
    ```
     - The `--build` flag ensures the application image is built before running.
+
 
 5. **Test the endpoint:**
    Open your browser and navigate to: `http://localhost:8080/hello`. You should see "Hello World".
@@ -45,4 +48,6 @@ A web application for managing a library, built with Spring Boot and Docker Comp
 6. **Stop the application:**
    ```bash
    docker compose down
+   or
+   docker compose down -v
    ```

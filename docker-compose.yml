@@ -1,17 +1,48 @@
 services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Root password not set}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-library_db}
+      MYSQL_USER: ${MYSQL_USER:-library_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Password not set}
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysql", "-u", "${MYSQL_USER:-library_user}", "-p${MYSQL_PASSWORD:?Password not set}", "-e", "SELECT 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s  # Give 30s before checking container health
+
   builder:
     image: eclipse-temurin:17-jdk-alpine
     working_dir: /library-app
     volumes:
       - .:/library-app
       - ./docs:/library-app/target/reports/apidocs
+      - maven-cache:/root/.m2/repository
+      - build-artifacts:/library-app/target
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${MYSQL_DATABASE:?Database name not set}
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER:-library_user}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD:?Password not set}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     command: >
-      sh -c "./mvnw package -DskipTests --batch-mode javadoc:javadoc"
+      sh -c "
+        ./mvnw dependency:go-offline --batch-mode &&
+        ./mvnw package $([ \"${RUN_TESTS:-true}\" = \"false\" ] && echo \"-DskipTests\") --batch-mode javadoc:javadoc
+        exit $?
+      "
+
   app:
     image: eclipse-temurin:17-jre-alpine
     working_dir: /library-app
     volumes:
-      - ./target/library-management-system-0.0.1-SNAPSHOT.jar:/library-app/library-app.jar
+      - build-artifacts:/library-app/target
     ports:
       - "8080:8080"
     depends_on:
@@ -24,19 +55,9 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER:-library_user}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD:?Password not set}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    command: ["java", "-jar", "library-app.jar"]
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Root password not set}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-library_db}
-      MYSQL_USER: ${MYSQL_USER:-library_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Password not set}
-    ports:
-      - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysql", "-u", "${MYSQL_USER:-library_user}", "-p${MYSQL_PASSWORD:?Password not set}", "-e", "SELECT 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 30s  # Give 30s before checking container health
+    command: >
+      sh -c "java -jar /library-app/target/library-management-system-0.0.1-SNAPSHOT.jar"
+
+volumes:
+  maven-cache:
+  build-artifacts:
