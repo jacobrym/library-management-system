@@ -1,4 +1,4 @@
-package com.jacobrymsza.librarymanagementsystem.controller;
+package com.jacobrymsza.librarymanagementsystem.controller.api;
 
 import com.jacobrymsza.librarymanagementsystem.dto.BookDTO;
 import com.jacobrymsza.librarymanagementsystem.service.BookService;
@@ -35,6 +35,16 @@ public class BookController {
     return ResponseEntity.ok(bookService.getAllBooks());
   }
 
+  /**
+   * Creates a new book in the library system.
+   * This endpoint accepts a book data transfer object, validates it, and persists the book
+   * using the {@code BookService}. Upon successful creation, it returns the created book
+   * with an HTTP status of 201 (Created).
+   *
+   * @param bookDTO the data transfer object containing book details to be created,
+   *                must not be null and must pass validation
+   * @return a {@code ResponseEntity} containing the created {@code BookDTO} and HTTP status 201
+   */
   @PostMapping
   public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
     BookDTO createdBook = bookService.createBook(bookDTO);

@@ -33,12 +33,11 @@ public class Book {
   @Column(name = "isbn")
   private String isbn;
 
-  @ManyToMany(mappedBy = "books")
+  @ManyToMany(mappedBy = "books", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private List<Author> authors = new ArrayList<>();
 
   @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Borrowing> borrowings = new ArrayList<>();
-
 
   public Book() {
   }
@@ -46,6 +45,11 @@ public class Book {
   public Book(String title, String isbn) {
     this.title = title;
     this.isbn = isbn;
+  }
+
+  public void addAuthor(Author author) {
+    authors.add(author);
+    author.getBooks().add(this);
   }
 
   public Long getId() {

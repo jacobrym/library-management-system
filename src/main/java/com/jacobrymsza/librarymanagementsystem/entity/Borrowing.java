@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Represents a borrowing record in the library management system.
@@ -84,7 +85,7 @@ public class Borrowing {
   }
 
   public void setBorrowDate(LocalDateTime borrowDate) {
-    this.borrowDate = borrowDate;
+    this.borrowDate = borrowDate.truncatedTo(ChronoUnit.MINUTES);
   }
 
   public LocalDateTime getReturnDate() {
@@ -92,6 +93,6 @@ public class Borrowing {
   }
 
   public void setReturnDate(LocalDateTime returnDate) {
-    this.returnDate = returnDate;
+    this.returnDate = returnDate.truncatedTo(ChronoUnit.MINUTES);
   }
 }

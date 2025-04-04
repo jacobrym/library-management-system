@@ -9,6 +9,9 @@ import com.jacobrymsza.librarymanagementsystem.repository.BorrowingRepository;
 import com.jacobrymsza.librarymanagementsystem.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +46,19 @@ public class BorrowingService {
   }
 
   /**
+   * Checks if a book is available for borrowing.
+   *
+   * @param bookId the ID of the book to check
+   * @return true if the book is available, false otherwise
+   */
+  public boolean isBookAvailable(Long bookId) {
+    return borrowingRepository.findAll().stream()
+        .filter(b -> b.getBook().getId().equals(bookId) && b.getReturnDate() == null)
+        .findAny()
+        .isEmpty();
+  }
+
+  /**
    * Creates a new borrowing record for a specified book and user.
    *
    * @param bookId the ID of the book to be borrowed
@@ -52,6 +68,10 @@ public class BorrowingService {
    */
   @Transactional
   public BorrowingDTO borrowBook(Long bookId, Long userId) {
+    if (!isBookAvailable(bookId)) {
+      throw new IllegalArgumentException("Book with ID " + bookId + " is currently borrowed");
+    }
+
     Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new IllegalArgumentException("Book with ID "
                                                             + bookId + " not found"));
@@ -88,6 +108,17 @@ public class BorrowingService {
     borrowing.setReturnDate(LocalDateTime.now());
     Borrowing updatedBorrowing = borrowingRepository.save(borrowing);
     return mapToDTO(updatedBorrowing);
+  }
+
+  /**
+   * Retrieves a list of all borrowings in the system.
+   *
+   * @return a list of BorrowingDTO objects
+   */
+  public List<BorrowingDTO> getAllBorrowings() {
+    return borrowingRepository.findAll().stream()
+        .map(this::mapToDTO)
+        .collect(Collectors.toList());
   }
 
   /**

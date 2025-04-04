@@ -1,5 +1,9 @@
 package com.jacobrymsza.librarymanagementsystem.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +14,19 @@ import java.util.List;
  */
 public class BookDTO {
   private Long id;
+
+  @NotBlank(message = "Title cannot be blank")
   private String title;
+
+  @NotBlank(message = "ISBN cannot be blank")
   private String isbn;
+
+  @NotEmpty(message = "At least one author must be selected")
   private List<String> authorNames;
+
+  public BookDTO() {
+    this.authorNames = new ArrayList<>();
+  }
 
   /**
    * Constructs a new {@link BookDTO} instance with the specified book details.

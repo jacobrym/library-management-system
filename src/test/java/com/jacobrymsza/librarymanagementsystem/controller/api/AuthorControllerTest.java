@@ -1,4 +1,4 @@
-package com.jacobrymsza.librarymanagementsystem.controller;
+package com.jacobrymsza.librarymanagementsystem.controller.api;
 
 import com.jacobrymsza.librarymanagementsystem.dto.AuthorDTO;
 import com.jacobrymsza.librarymanagementsystem.service.AuthorService;

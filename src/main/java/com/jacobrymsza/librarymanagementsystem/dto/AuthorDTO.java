@@ -1,12 +1,22 @@
 package com.jacobrymsza.librarymanagementsystem.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import java.util.ArrayList;
+
 /**
  * Data Transfer Object for transferring author data between layers.
  */
 public class AuthorDTO {
   private Long id;
+
+  @NotBlank(message = "First name cannot be blank")
   private String firstName;
+
+  @NotBlank(message = "Last name cannot be blank")
   private String lastName;
+
+  public AuthorDTO() {
+  }
 
   /**
    * Constructs a new AuthorDTO with the specified details.

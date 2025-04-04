@@ -1,16 +1,26 @@
 package com.jacobrymsza.librarymanagementsystem.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Data Transfer Object for transferring borrowing data between layers.
  */
 public class BorrowingDTO {
   private Long id;
+
+  @NotBlank(message = "Title cannot be blank")
   private String bookTitle;
+
+  @NotBlank(message = "Username cannot be blank")
   private String userUsername;
+
   private LocalDateTime borrowDate;
   private LocalDateTime returnDate;
+
+  public BorrowingDTO() {
+  }
 
   /**
    * Constructs a new BorrowingDTO with the specified details.

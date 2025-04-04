@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Borrow a Book</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/books}">Books</a>
+            <a class="nav-link" th:href="@{/authors}">Authors</a>
+            <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
+            <a class="nav-link" th:href="@{/users}">Users</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1>Borrow a Book</h1>
+    <form th:action="@{/borrowings/new}" th:object="${borrowRequest}" method="post" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="bookId" class="form-label">Book:</label>
+            <select id="bookId" th:field="*{bookId}" class="form-select" required>
+                <option value="">Select a book</option>
+                <option th:each="book : ${books}"
+                        th:value="${book.id}"
+                        th:text="${book.title + ' (' + book.isbn + ')'}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}" class="error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="userId" class="form-label">User:</label>
+            <select id="userId" th:field="*{userId}" class="form-select" required>
+                <option value="">Select a user</option>
+                <option th:each="user : ${users}"
+                        th:value="${user.id}"
+                        th:text="${user.username + ' (' + user.email + ')'}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}" class="error"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Borrow</button>
+        <a th:href="@{/borrowings}" class="btn btn-secondary">Back to List</a>
+    </form>
+    <p th:if="${error}" th:text="${error}" class="error mt-3"></p>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script>
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+</body>
+</html>

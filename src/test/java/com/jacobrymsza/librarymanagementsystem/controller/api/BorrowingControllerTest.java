@@ -1,4 +1,4 @@
-package com.jacobrymsza.librarymanagementsystem.controller;
+package com.jacobrymsza.librarymanagementsystem.controller.api;
 
 import com.jacobrymsza.librarymanagementsystem.dto.BorrowRequestDTO;
 import com.jacobrymsza.librarymanagementsystem.dto.BorrowingDTO;
@@ -105,6 +105,8 @@ class BorrowingControllerTest {
             .content(invalidJsonRequest))
         .andExpect(status().isBadRequest())
         .andExpect(content().string("Book ID and User ID are required"));
+
+    verify(borrowingService, never()).borrowBook(any(), any());
   }
 
   @Test

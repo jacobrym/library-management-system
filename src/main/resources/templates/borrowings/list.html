@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Library - Borrowings</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/books}">Books</a>
+            <a class="nav-link" th:href="@{/authors}">Authors</a>
+            <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
+            <a class="nav-link" th:href="@{/users}">Users</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1>All Borrowings</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Book Title</th>
+            <th>User</th>
+            <th>Borrow Date</th>
+            <th>Return Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="borrowing : ${borrowings}">
+            <td th:text="${borrowing.id}"></td>
+            <td th:text="${borrowing.bookTitle}"></td>
+            <td th:text="${borrowing.userUsername}"></td>
+            <td th:text="${borrowing.borrowDate}"></td>
+            <td th:text="${borrowing.returnDate ?: 'Not Returned'}"></td>
+            <td>
+                <form th:action="@{/borrowings/{id}/return(id=${borrowing.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-warning" th:disabled="${borrowing.returnDate != null}">Return</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/borrowings/new}" class="btn btn-success">Borrow a Book</a>
+    <p th:if="${error}" th:text="${error}" class="error mt-3"></p>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

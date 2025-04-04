@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Author Details</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/books}">Books</a>
+            <a class="nav-link" th:href="@{/authors}">Authors</a>
+            <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
+            <a class="nav-link" th:href="@{/users}">Users</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1>Author Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text"><strong>ID:</strong> <span th:text="${author.id}"></span></p>
+            <p class="card-text"><strong>First Name:</strong> <span th:text="${author.firstName}"></span></p>
+            <p class="card-text"><strong>Last Name:</strong> <span th:text="${author.lastName}"></span></p>
+        </div>
+    </div>
+    <a th:href="@{/authors}" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

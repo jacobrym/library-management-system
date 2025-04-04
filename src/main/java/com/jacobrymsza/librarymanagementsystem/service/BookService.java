@@ -44,10 +44,12 @@ public class BookService {
     if (authors.isEmpty()) {
       throw new IllegalArgumentException("Book must have at least one author");
     }
-    book.setAuthors(authors);
+
+    for (Author author : authors) {
+      book.addAuthor(author);
+    }
 
     Book updatedBook = bookRepository.save(book);
-
     return mapToDTO(updatedBook);
   }
 
