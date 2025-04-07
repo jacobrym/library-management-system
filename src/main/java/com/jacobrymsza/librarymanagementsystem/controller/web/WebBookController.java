@@ -5,6 +5,7 @@ import com.jacobrymsza.librarymanagementsystem.service.AuthorService;
 import com.jacobrymsza.librarymanagementsystem.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Thymeleaf templates.
  */
 @Controller
-@RequestMapping({"/", "/books"})
+@RequestMapping("/books")
 public class WebBookController {
   private final BookService bookService;
   private final AuthorService authorService; // Dodajemy AuthorService
@@ -50,7 +51,8 @@ public class WebBookController {
    * @return the name of the Thymeleaf template for the book creation form
    */
   @GetMapping("/new")
-  public String showCreateForm(Model model) {
+  @PreAuthorize("hasRole('ADMIN')")
+  public String showCreateBookForm(Model model) {
     model.addAttribute("book", new BookDTO());
     model.addAttribute("authors", authorService.getAllAuthors());
     return "books/new";
@@ -66,6 +68,7 @@ public class WebBookController {
    *         if validation fails or an error occurs
    */
   @PostMapping("/new")
+  @PreAuthorize("hasRole('ADMIN')")
   public String createBook(@Valid @ModelAttribute("book") BookDTO bookDTO,
                            BindingResult result, Model model) {
     if (result.hasErrors()) {

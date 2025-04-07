@@ -22,8 +22,3 @@ spring:
     init:
       mode: always
       data-locations: classpath:data.sql
-  autoconfigure:
-    # temporary disable spring security
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration

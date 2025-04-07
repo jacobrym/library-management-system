@@ -4,6 +4,7 @@ import com.jacobrymsza.librarymanagementsystem.dto.AuthorDTO;
 import com.jacobrymsza.librarymanagementsystem.service.AuthorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,7 +48,8 @@ public class WebAuthorController {
    * @return the name of the Thymeleaf template for the author creation form
    */
   @GetMapping("/new")
-  public String showCreateForm(Model model) {
+  @PreAuthorize("hasRole('ADMIN')")
+  public String showCreateAuthorForm(Model model) {
     model.addAttribute("author", new AuthorDTO());
     return "authors/new";
   }
@@ -60,6 +62,7 @@ public class WebAuthorController {
    * @return a redirect to the authors list on success, or the form template if validation fails
    */
   @PostMapping("/new")
+  @PreAuthorize("hasRole('ADMIN')")
   public String createAuthor(@Valid @ModelAttribute("author") AuthorDTO authorDTO,
                              BindingResult result) {
     if (result.hasErrors()) {

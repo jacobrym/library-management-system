@@ -6,17 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
-        <div class="navbar-nav">
-            <a class="nav-link" th:href="@{/books}">Books</a>
-            <a class="nav-link" th:href="@{/authors}">Authors</a>
-            <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
-            <a class="nav-link" th:href="@{/users}">Users</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments :: navbar}"></div>
 
 <div class="container mt-4">
     <h1>Borrow a Book</h1>

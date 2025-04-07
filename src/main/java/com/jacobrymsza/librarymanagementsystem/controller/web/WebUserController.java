@@ -4,6 +4,7 @@ import com.jacobrymsza.librarymanagementsystem.dto.UserDTO;
 import com.jacobrymsza.librarymanagementsystem.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,7 +49,8 @@ public class WebUserController {
    * @return the name of the Thymeleaf template for the user creation form
    */
   @GetMapping("/new")
-  public String showCreateForm(Model model) {
+  @PreAuthorize("hasRole('ADMIN')")
+  public String showCreateUserForm(Model model) {
     model.addAttribute("user", new UserDTO());
     return "users/new";
   }
@@ -63,6 +65,7 @@ public class WebUserController {
    *         if validation fails or an error occurs
    */
   @PostMapping("/new")
+  @PreAuthorize("hasRole('ADMIN')")
   public String createUser(@Valid @ModelAttribute("user") UserDTO userDTO,
                            BindingResult result, Model model) {
     if (result.hasErrors()) {

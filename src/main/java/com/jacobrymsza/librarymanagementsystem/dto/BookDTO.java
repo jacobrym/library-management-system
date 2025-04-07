@@ -3,6 +3,7 @@ package com.jacobrymsza.librarymanagementsystem.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +16,13 @@ import java.util.List;
 public class BookDTO {
   private Long id;
 
-  @NotBlank(message = "Title cannot be blank")
+  @NotBlank(message = "Title is mandatory")
+  @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
   private String title;
 
-  @NotBlank(message = "ISBN cannot be blank")
+  @NotBlank(message = "ISBN is mandatory")
+  @Pattern(regexp = "^[0-9]+$", message = "ISBN must contain only digits")
+  @Size(min = 10, max = 13, message = "ISBN must be between 10 and 13 digits")
   private String isbn;
 
   @NotEmpty(message = "At least one author must be selected")

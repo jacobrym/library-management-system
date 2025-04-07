@@ -6,21 +6,11 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
-        <div class="navbar-nav">
-            <a class="nav-link" th:href="@{/books}">Books</a>
-            <a class="nav-link" th:href="@{/authors}">Authors</a>
-            <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
-            <a class="nav-link" th:href="@{/users}">Users</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments :: navbar}"></div>
 
 <div class="container mt-4">
     <h1>Add Book</h1>
-    <form th:action="@{/books/new}" th:object="${book}" method="post" class="needs-validation" novalidate>
+    <form th:action="@{/books/new}" th:object="${book}" method="post">
         <div class="mb-3">
             <label for="title" class="form-label">Title:</label>
             <input type="text" id="title" th:field="*{title}" class="form-control" required />
@@ -28,7 +18,7 @@
         </div>
         <div class="mb-3">
             <label for="isbn" class="form-label">ISBN:</label>
-            <input type="text" id="isbn" th:field="*{isbn}" class="form-control" required />
+            <input type="text" id="isbn" th:field="*{isbn}" class="form-control" pattern="[0-9]+" title="ISBN must contain only digits" minlength="10" maxlength="13" required />
             <div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" class="error"></div>
         </div>
         <div class="mb-3">

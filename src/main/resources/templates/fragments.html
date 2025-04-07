@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
+        <div class="navbar-nav" sec:authorize="isAuthenticated()">
+            <a class="nav-link" th:href="@{/books}">Books</a>
+            <a class="nav-link" th:href="@{/authors}">Authors</a>
+            <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
+            <a class="nav-link" th:href="@{/users}" sec:authorize="hasRole('ADMIN')">Users</a>
+            <span class="nav-link">
+                    Logged in as: <span sec:authentication="name"></span>
+            </span>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="nav-link btn btn-link">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
