@@ -6,16 +6,21 @@
 <body>
 
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
+    <div class="container d-flex justify-content-between align-items-center">
+
         <a class="navbar-brand" href="/">Jacob Rymsza - Library</a>
+
+        <div sec:authorize="isAuthenticated()" class="mx-auto">
+            <span class="nav-link">
+                Logged in as: <span sec:authentication="name"></span>
+            </span>
+        </div>
+
         <div class="navbar-nav" sec:authorize="isAuthenticated()">
             <a class="nav-link" th:href="@{/books}">Books</a>
             <a class="nav-link" th:href="@{/authors}">Authors</a>
             <a class="nav-link" th:href="@{/borrowings}">Borrowings</a>
             <a class="nav-link" th:href="@{/users}" sec:authorize="hasRole('ADMIN')">Users</a>
-            <span class="nav-link">
-                    Logged in as: <span sec:authentication="name"></span>
-            </span>
             <form th:action="@{/logout}" method="post" class="d-inline">
                 <button type="submit" class="nav-link btn btn-link">Logout</button>
             </form>

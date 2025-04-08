@@ -16,9 +16,14 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true  # temporary for debugging
+    show-sql: false
     defer-datasource-initialization: true  # Populate DB after any EntityManagerFactory init
   sql:
     init:
       mode: always
       data-locations: classpath:data.sql
+
+logging:
+  level:
+    com.jacobrymsza.librarymanagementsystem.aspect: INFO
+    org.springframework: INFO

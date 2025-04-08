@@ -1,9 +1,11 @@
 com.jacobrymsza.librarymanagementsystem
+com.jacobrymsza.librarymanagementsystem.aspect
 com.jacobrymsza.librarymanagementsystem.config
 com.jacobrymsza.librarymanagementsystem.controller
 com.jacobrymsza.librarymanagementsystem.controller.api
 com.jacobrymsza.librarymanagementsystem.controller.web
 com.jacobrymsza.librarymanagementsystem.dto
 com.jacobrymsza.librarymanagementsystem.entity
+com.jacobrymsza.librarymanagementsystem.exception
 com.jacobrymsza.librarymanagementsystem.repository
 com.jacobrymsza.librarymanagementsystem.service

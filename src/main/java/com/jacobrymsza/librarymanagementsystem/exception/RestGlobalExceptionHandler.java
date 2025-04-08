@@ -1,6 +1,5 @@
-package com.jacobrymsza.librarymanagementsystem.controller;
+package com.jacobrymsza.librarymanagementsystem.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * and returns appropriate HTTP responses for different exception types.
  */
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class RestGlobalExceptionHandler {
 
   /**
    * Handles IllegalArgumentException thrown anywhere in the application.

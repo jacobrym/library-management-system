@@ -10,25 +10,27 @@
 
 <div class="container mt-4">
     <h1>All Borrowings</h1>
+    <a th:href="@{/borrowings/new}" class="btn btn-success mb-3 float-start">Borrow a Book</a>
+    <p th:if="${error}" th:text="${error}" class="text-danger mt-3"></p>
     <table class="table table-striped">
-        <thead>
+        <thead class="table-primary">
         <tr>
-            <th>ID</th>
-            <th>Book Title</th>
-            <th>User</th>
-            <th>Borrow Date</th>
-            <th>Return Date</th>
-            <th>Actions</th>
+            <th class="col-1">ID</th>
+            <th class="col-4">Book Title</th>
+            <th class="col-2">User</th>
+            <th class="col-2">Borrow Date</th>
+            <th class="col-2">Return Date</th>
+            <th class="col-1 text-end">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="borrowing : ${borrowings}">
-            <td th:text="${borrowing.id}"></td>
-            <td th:text="${borrowing.bookTitle}"></td>
-            <td th:text="${borrowing.userUsername}"></td>
-            <td th:text="${borrowing.borrowDate}"></td>
-            <td th:text="${borrowing.returnDate ?: 'Not Returned'}"></td>
-            <td>
+            <td class="col-1" th:text="${borrowing.id}"></td>
+            <td class="col-4" th:text="${borrowing.bookTitle}"></td>
+            <td class="col-2" th:text="${borrowing.userUsername}"></td>
+            <td class="col-2" th:text="${borrowing.borrowDate}"></td>
+            <td class="col-2" th:text="${borrowing.returnDate ?: 'Not Returned'}"></td>
+            <td class="col-1 text-end">
                 <form th:action="@{/borrowings/{id}/return(id=${borrowing.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-sm btn-warning" th:disabled="${borrowing.returnDate != null}">Return</button>
                 </form>
@@ -36,8 +38,6 @@
         </tr>
         </tbody>
     </table>
-    <a th:href="@{/borrowings/new}" class="btn btn-success">Borrow a Book</a>
-    <p th:if="${error}" th:text="${error}" class="error mt-3"></p>
 </div>
 
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>

@@ -10,27 +10,30 @@
 
 <div class="container mt-4">
     <h1>All Authors</h1>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="author : ${authors}">
-            <td th:text="${author.id}"></td>
-            <td th:text="${author.firstName}"></td>
-            <td th:text="${author.lastName}"></td>
-            <td>
-                <a th:href="@{/authors/{id}(id=${author.id})}" class="btn btn-sm btn-primary">Details</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/authors/new}" class="btn btn-success" sec:authorize="hasRole('ADMIN')">Add New Author</a>
+    <a th:href="@{/authors/new}" class="btn btn-success mb-3 float-start" sec:authorize="hasRole('ADMIN')">Add New Author</a>
+    <p th:if="${error}" th:text="${error}" class="text-danger mt-3"></p>
+    <div class="w-50 mx-auto">
+        <table class="table table-striped">
+            <thead class="table-primary">
+            <tr>
+                <th class="col-1">ID</th>
+                <th class="col-5">First Name</th>
+                <th class="col-5">Last Name</th>
+                <th class="col-1 text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="author : ${authors}">
+                <td class="col-1" th:text="${author.id}"></td>
+                <td class="col-5" th:text="${author.firstName}"></td>
+                <td class="col-5" th:text="${author.lastName}"></td>
+                <td class="col-1 text-end">
+                    <a th:href="@{/authors/{id}(id=${author.id})}" class="btn btn-sm btn-primary">Details</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
