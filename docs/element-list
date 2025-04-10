@@ -1,7 +1,6 @@
 com.jacobrymsza.librarymanagementsystem
 com.jacobrymsza.librarymanagementsystem.aspect
 com.jacobrymsza.librarymanagementsystem.config
-com.jacobrymsza.librarymanagementsystem.controller
 com.jacobrymsza.librarymanagementsystem.controller.api
 com.jacobrymsza.librarymanagementsystem.controller.web
 com.jacobrymsza.librarymanagementsystem.dto

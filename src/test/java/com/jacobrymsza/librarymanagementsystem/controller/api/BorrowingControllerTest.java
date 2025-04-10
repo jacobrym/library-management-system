@@ -121,4 +121,28 @@ class BorrowingControllerTest {
 
     verify(borrowingService, times(1)).returnBook(1L);
   }
+
+  @Test
+  void borrowBook_bookNotAvailable() throws Exception {
+    String jsonRequest = "{\"bookId\":1,\"userId\":1}";
+    when(borrowingService.borrowBook(1L, 1L))
+        .thenThrow(new IllegalArgumentException("Book is currently borrowed"));
+
+    mockMvc.perform(post("/api/borrowings")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonRequest))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Book is currently borrowed"));
+  }
+
+  @Test
+  void returnBook_notFound() throws Exception {
+    when(borrowingService.returnBook(999L))
+        .thenThrow(new IllegalArgumentException("Borrowing not found"));
+
+    mockMvc.perform(put("/api/borrowings/999/return")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Borrowing not found"));
+  }
 }

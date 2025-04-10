@@ -1,6 +1,7 @@
 package com.jacobrymsza.librarymanagementsystem.controller.api;
 
 import com.jacobrymsza.librarymanagementsystem.dto.BookDTO;
+import com.jacobrymsza.librarymanagementsystem.exception.RestGlobalExceptionHandler;
 import com.jacobrymsza.librarymanagementsystem.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,9 @@ class BookControllerTest {
 
   @BeforeEach
   void setUp() {
-    mockMvc = MockMvcBuilders.standaloneSetup(bookController).build();
+    mockMvc = MockMvcBuilders.standaloneSetup(bookController)
+        .setControllerAdvice(new RestGlobalExceptionHandler())
+        .build();
   }
 
   @Test
@@ -64,5 +67,52 @@ class BookControllerTest {
         .andExpect(jsonPath("$.title").value("Test Book"));
 
     verify(bookService, times(1)).createBook(any(BookDTO.class));
+  }
+
+  @Test
+  void updateBook_success() throws Exception {
+    BookDTO updatedBook = new BookDTO(1L, "Updated Book", "1234567890", Arrays.asList("John Doe"));
+    when(bookService.updateBook(eq(1L), any(BookDTO.class))).thenReturn(updatedBook);
+
+    String jsonRequest = "{\"title\":\"Updated Book\",\"isbn\":\"1234567890\",\"authorNames\":[\"John Doe\"]}";
+
+    mockMvc.perform(put("/api/books/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonRequest))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.title").value("Updated Book"));
+
+    verify(bookService, times(1)).updateBook(eq(1L), any(BookDTO.class));
+  }
+
+  @Test
+  void deleteBook_success() throws Exception {
+    doNothing().when(bookService).deleteBook(1L);
+
+    mockMvc.perform(delete("/api/books/1")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+
+    verify(bookService, times(1)).deleteBook(1L);
+  }
+
+  @Test
+  void deleteBook_notFound() throws Exception {
+    doThrow(new IllegalArgumentException("Book not found")).when(bookService).deleteBook(999L);
+
+    mockMvc.perform(delete("/api/books/999")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Book not found"));
+  }
+
+  @Test
+  void createBook_invalidIsbn() throws Exception {
+    String invalidJson = "{\"title\":\"Test Book\",\"isbn\":\"abc\",\"authorNames\":[\"John Doe\"]}";
+
+    mockMvc.perform(post("/api/books")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(invalidJson))
+        .andExpect(status().isBadRequest());
   }
 }

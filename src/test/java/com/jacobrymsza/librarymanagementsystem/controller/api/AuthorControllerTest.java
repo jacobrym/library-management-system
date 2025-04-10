@@ -1,6 +1,7 @@
 package com.jacobrymsza.librarymanagementsystem.controller.api;
 
 import com.jacobrymsza.librarymanagementsystem.dto.AuthorDTO;
+import com.jacobrymsza.librarymanagementsystem.exception.RestGlobalExceptionHandler;
 import com.jacobrymsza.librarymanagementsystem.service.AuthorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class) // Use Mockito extension instead of Spring-specific annotations
+@ExtendWith(MockitoExtension.class)
 class AuthorControllerTest {
 
   private MockMvc mockMvc;
@@ -31,8 +32,9 @@ class AuthorControllerTest {
 
   @BeforeEach
   void setUp() {
-    // Manually set up MockMvc with the controller and mocked service
-    mockMvc = MockMvcBuilders.standaloneSetup(authorController).build();
+    mockMvc = MockMvcBuilders.standaloneSetup(authorController)
+        .setControllerAdvice(new RestGlobalExceptionHandler())
+        .build();
   }
 
   @Test
@@ -112,5 +114,40 @@ class AuthorControllerTest {
         .andExpect(status().isNoContent());
 
     verify(authorService, times(1)).deleteAuthor(1L);
+  }
+
+  @Test
+  void getAuthorById_notFound() throws Exception {
+    when(authorService.getAuthorById(999L)).thenThrow(new IllegalArgumentException("Author not found"));
+
+    mockMvc.perform(get("/api/authors/999")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Author not found"));
+
+    verify(authorService, times(1)).getAuthorById(999L);
+  }
+
+  @Test
+  void createAuthor_invalidInput() throws Exception {
+    String invalidJson = "{\"firstName\":\"\",\"lastName\":\"Doe\"}";
+
+    mockMvc.perform(post("/api/authors")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(invalidJson))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void updateAuthor_notFound() throws Exception {
+    String jsonRequest = "{\"firstName\":\"Jane\",\"lastName\":\"Doe\"}";
+    when(authorService.updateAuthor(eq(999L), any(AuthorDTO.class)))
+        .thenThrow(new IllegalArgumentException("Author not found"));
+
+    mockMvc.perform(put("/api/authors/999")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonRequest))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Author not found"));
   }
 }
